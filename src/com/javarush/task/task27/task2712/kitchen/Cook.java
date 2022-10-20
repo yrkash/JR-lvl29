@@ -12,6 +12,7 @@ public class Cook extends Observable implements Observer {
         this.name = name;
     }
 
+
     @Override
     public String toString() {
         return name;
