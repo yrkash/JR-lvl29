@@ -9,6 +9,9 @@ public class Advertisement {
     private int duration;
     private long amountPerOneDisplaying;
 
+    public int getHits() {
+        return hits;
+    }
 
     public Advertisement(Object content, String name, long initialAmount, int hits, int duration) {
         this.content = content;
@@ -30,5 +33,16 @@ public class Advertisement {
 
     public long getAmountPerOneDisplaying() {
         return amountPerOneDisplaying;
+    }
+
+    public void revalidate() {
+        if (hits < 1) throw new UnsupportedOperationException();
+        hits--;
+
+    }
+
+    @Override
+    public String toString() {
+        return name + " is displaying... " + amountPerOneDisplaying + ", " + amountPerOneDisplaying * 1000 / duration;
     }
 }
