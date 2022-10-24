@@ -2,7 +2,7 @@ package com.javarush.task.task27.task2712.ad;
 
 public class NoVideoAvailableException extends RuntimeException {
 
-    public NoVideoAvailableException(String s) {
-        super(s);
+    public NoVideoAvailableException() {
+
     }
 }

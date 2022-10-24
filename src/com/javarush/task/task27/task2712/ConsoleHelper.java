@@ -37,7 +37,7 @@ public class ConsoleHelper {
             try {
                 dishes.add(Dish.valueOf(insertDish));
             } catch (IllegalArgumentException e) {
-                ConsoleHelper.writeMessage("the dish is absent in the list, choose a dish");
+                ConsoleHelper.writeMessage("choose a right dish");
             }
         }
         return dishes;

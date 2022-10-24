@@ -36,9 +36,10 @@ public class Advertisement {
     }
 
     public void revalidate() {
-        if (hits < 1) throw new UnsupportedOperationException();
+        if (hits == 0) {
+            throw new UnsupportedOperationException();
+        }
         hits--;
-
     }
 
     @Override

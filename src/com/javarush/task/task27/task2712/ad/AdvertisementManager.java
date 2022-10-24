@@ -1,6 +1,8 @@
 package com.javarush.task.task27.task2712.ad;
 
 import com.javarush.task.task27.task2712.ConsoleHelper;
+import com.javarush.task.task27.task2712.statistic.StatisticManager;
+import com.javarush.task.task27.task2712.statistic.event.VideoSelectedEventDataRow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,17 +23,24 @@ public class AdvertisementManager {
     }
 
     public void processVideos() {
-        if (storage.list().isEmpty()) throw new NoVideoAvailableException("No video is available for the order ");
+        StatisticManager statisticManager = StatisticManager.getInstance();
+
+        VideoSelectedEventDataRow videoSelectedEventDataRow = new VideoSelectedEventDataRow(bestChoice, bestAmount, bestDuration);
+        if (storage.list().isEmpty()) throw new NoVideoAvailableException();
 
         List<Advertisement> advertisements = storage.list().stream()
                         .filter(advertisement -> advertisement.getHits() > 0)
                                 . collect(Collectors.toList());
         recursionSearch(advertisements);
+
+        statisticManager.register(videoSelectedEventDataRow);
+
         // Сортировка по условию 2.4 из задания 9
         bestChoice
                 .sort(Comparator.comparingLong(Advertisement::getAmountPerOneDisplaying)
                         .thenComparingInt(Advertisement::getDuration)
                         .reversed());
+
         // Вывод на экран + Декремент поля hits у Advertisement
         bestChoice.forEach(advertisement -> {
             ConsoleHelper.writeMessage(advertisement.toString());

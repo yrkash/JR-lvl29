@@ -1,6 +1,7 @@
 package com.javarush.task.task27.task2712.statistic;
 
 import com.javarush.task.task27.task2712.ad.AdvertisementStorage;
+import com.javarush.task.task27.task2712.statistic.event.CookedOrderEventDataRow;
 import com.javarush.task.task27.task2712.statistic.event.EventDataRow;
 import com.javarush.task.task27.task2712.statistic.event.EventType;
 
@@ -23,7 +24,21 @@ public class StatisticManager {
                 storage.put(eventType, new ArrayList<EventDataRow>());
             }
         }
+
+        private void put (EventDataRow data) {
+            /*
+            EventType type = data.getType();
+            if (type == EventType.COOKED_ORDER) {
+                List<EventDataRow> list = storage.get(EventType.COOKED_ORDER);
+                list.add(data);
+                storage.replace(EventType.COOKED_ORDER,list);
+            }
+             */
+            if (storage.containsKey(data.getType())) { storage.get(data.getType()).add(data);}
+        }
+
     }
+
 
     public static StatisticManager getInstance() {
         if (instance == null) {
@@ -33,7 +48,7 @@ public class StatisticManager {
     }
 
     public void register(EventDataRow data) {
-
+        statisticStorage.put(data);
     }
 
 }
