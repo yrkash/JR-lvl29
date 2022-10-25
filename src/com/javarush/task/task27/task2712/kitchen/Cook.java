@@ -9,7 +9,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class Cook extends Observable implements Observer {
-    private String name;
+    private final String name;
 
     public Cook(String name) {
         this.name = name;
@@ -26,7 +26,7 @@ public class Cook extends Observable implements Observer {
         StatisticManager statisticManager = StatisticManager.getInstance();
         Tablet tablet = (Tablet) o;
         Order order = (Order) arg;
-        CookedOrderEventDataRow cookedOrderEventDataRow = new CookedOrderEventDataRow(tablet.toString(),name, order.getTotalCookingTime(),order.getDishes());
+        CookedOrderEventDataRow cookedOrderEventDataRow = new CookedOrderEventDataRow(tablet.toString(),name, order.getTotalCookingTime() * 60,order.getDishes());
         statisticManager.register(cookedOrderEventDataRow);
         ConsoleHelper.writeMessage("Start cooking - " + arg);
         this.setChanged();

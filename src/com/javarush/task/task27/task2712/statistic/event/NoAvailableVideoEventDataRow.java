@@ -27,4 +27,9 @@ public class NoAvailableVideoEventDataRow implements EventDataRow{
     public int getTime() {
         return totalDuration;
     }
+
+    @Override
+    public void setCurrentDate(Date date) {
+        this.currentDate = date;
+    }
 }

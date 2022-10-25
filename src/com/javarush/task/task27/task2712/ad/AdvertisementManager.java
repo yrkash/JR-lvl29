@@ -25,14 +25,14 @@ public class AdvertisementManager {
     public void processVideos() {
         StatisticManager statisticManager = StatisticManager.getInstance();
 
-        VideoSelectedEventDataRow videoSelectedEventDataRow = new VideoSelectedEventDataRow(bestChoice, bestAmount, bestDuration);
+
         if (storage.list().isEmpty()) throw new NoVideoAvailableException();
 
         List<Advertisement> advertisements = storage.list().stream()
                         .filter(advertisement -> advertisement.getHits() > 0)
                                 . collect(Collectors.toList());
         recursionSearch(advertisements);
-
+        VideoSelectedEventDataRow videoSelectedEventDataRow = new VideoSelectedEventDataRow(bestChoice, bestAmount, bestDuration);
         statisticManager.register(videoSelectedEventDataRow);
 
         // Сортировка по условию 2.4 из задания 9

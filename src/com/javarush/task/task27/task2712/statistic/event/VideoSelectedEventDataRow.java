@@ -32,4 +32,13 @@ public class VideoSelectedEventDataRow implements EventDataRow{
     public int getTime() {
         return totalDuration;
     }
+
+    public long getAmount() {
+        return amount;
+    }
+
+    @Override
+    public void setCurrentDate(Date date) {
+        this.currentDate = date;
+    }
 }

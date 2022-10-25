@@ -1,10 +1,10 @@
 package com.javarush.task.task27.task2712.statistic;
 
-import com.javarush.task.task27.task2712.ad.AdvertisementStorage;
 import com.javarush.task.task27.task2712.kitchen.Cook;
 import com.javarush.task.task27.task2712.statistic.event.CookedOrderEventDataRow;
 import com.javarush.task.task27.task2712.statistic.event.EventDataRow;
 import com.javarush.task.task27.task2712.statistic.event.EventType;
+import com.javarush.task.task27.task2712.statistic.event.VideoSelectedEventDataRow;
 
 import java.util.*;
 
@@ -16,6 +16,66 @@ public class StatisticManager {
     private StatisticManager() {
     }
 
+    public Map<Date, Double> calcTotalAdvertisementAmountPerDay() {
+        TreeMap<Date, Double> treeMap = new TreeMap<>(Collections.reverseOrder());
+        Calendar calendar = Calendar.getInstance();
+
+        //Map<EventType, List<EventDataRow>> storage = statisticStorage.getStorage();
+        List<EventDataRow> list = statisticStorage.getStorage().get(EventType.SELECTED_VIDEOS);
+        for (EventDataRow eventDataRow: list) {
+            VideoSelectedEventDataRow videoRow = (VideoSelectedEventDataRow) eventDataRow;
+            calendar.setTime(videoRow.getDate());
+            GregorianCalendar gregorianCalendar = new GregorianCalendar(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            Date date = gregorianCalendar.getTime();
+            if (treeMap.containsKey(date)) {
+                treeMap.put(date, treeMap.get(date) + videoRow.getAmount() / 100);
+            } else {
+                treeMap.put(date, treeMap.get(date) / 100);
+            }
+        }
+        return treeMap;
+    }
+
+    public Map<Date, Map<String, Integer>> calcCookingTimePerDay() {
+        TreeMap<Date, Map<String, Integer>> treeMap = new TreeMap<>(Collections.reverseOrder());
+        Calendar calendar = Calendar.getInstance();
+
+        //Map<EventType, List<EventDataRow>> storage = statisticStorage.getStorage();
+        List<EventDataRow> list = statisticStorage.getStorage().get(EventType.COOKED_ORDER);
+        for (EventDataRow eventDataRow: list) {
+            CookedOrderEventDataRow cookRow = (CookedOrderEventDataRow) eventDataRow;
+            calendar.setTime(cookRow.getDate());
+            GregorianCalendar gregorianCalendar = new GregorianCalendar(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            Date date = gregorianCalendar.getTime();
+            if (treeMap.containsKey(date)) {
+                if (treeMap.get(date).containsKey(cookRow.getCookName())) {
+                    Integer currentCookingTime = treeMap.get(date).get(cookRow.getCookName());
+                    Integer newCookingTime = cookRow.getTime();
+                    Map<String, Integer> buffMap = treeMap.get(date);
+                    buffMap.put(cookRow.getCookName(), currentCookingTime + newCookingTime);
+                    treeMap.put(date, buffMap);
+                } else {
+                    Map<String, Integer> buffMap = treeMap.get(date);
+                    buffMap.put(cookRow.getCookName(), cookRow.getTime());
+                    treeMap.put(date, buffMap);
+                }
+            } else {
+                Map<String, Integer> buffMap = new TreeMap<>();
+                buffMap.put(cookRow.getCookName(), cookRow.getTime());
+                treeMap.put(date, buffMap);
+            }
+        }
+        return treeMap;
+    }
+
+
+
     private class StatisticStorage {
         private Map<EventType, List<EventDataRow>> storage = new HashMap<>();
 
@@ -25,15 +85,12 @@ public class StatisticManager {
             }
         }
 
+        public Map<EventType, List<EventDataRow>> getStorage() {
+            return storage;
+        }
+
         private void put (EventDataRow data) {
-            /*
-            EventType type = data.getType();
-            if (type == EventType.COOKED_ORDER) {
-                List<EventDataRow> list = storage.get(EventType.COOKED_ORDER);
-                list.add(data);
-                storage.replace(EventType.COOKED_ORDER,list);
-            }
-             */
+
             if (storage.containsKey(data.getType())) { storage.get(data.getType()).add(data);}
         }
 
