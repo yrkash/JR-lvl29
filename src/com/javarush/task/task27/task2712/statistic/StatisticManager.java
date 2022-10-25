@@ -32,9 +32,10 @@ public class StatisticManager {
                     calendar.get(Calendar.DAY_OF_MONTH));
             Date date = gregorianCalendar.getTime();
             if (treeMap.containsKey(date)) {
-                treeMap.put(date, treeMap.get(date) + videoRow.getAmount() / 100);
+                Double curAmount = treeMap.get(date) + (double) (videoRow.getAmount()) / 100;
+                treeMap.put(date, curAmount);
             } else {
-                treeMap.put(date, (double) (videoRow.getAmount() / 100));
+                treeMap.put(date, (double) (videoRow.getAmount()) / 100);
             }
         }
         return treeMap;

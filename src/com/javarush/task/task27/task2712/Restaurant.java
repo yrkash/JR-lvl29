@@ -23,6 +23,7 @@ public class Restaurant {
         //tablet.createOrder();
         //tablet.createOrder();
         //tablet.createOrder();
+
         /*
         DirectorTablet directorTablet = new DirectorTablet();
         directorTablet.printAdvertisementProfit();
@@ -30,15 +31,11 @@ public class Restaurant {
         directorTablet.printActiveVideoSet();
         directorTablet.printArchivedVideoSet();
 
-*/
 
-        DirectorTabletTest tabletTest = new DirectorTabletTest();
-        tabletTest.setUp();
-        tabletTest.printAdvertisementProfit();
-        tabletTest.printCookWorkloading();
-
-
-
+         */
+        DirectorTabletTest directorTabletTest = new DirectorTabletTest();
+        directorTabletTest.setUp();
+        directorTabletTest.printAdvertisementProfit();
 
 
 
