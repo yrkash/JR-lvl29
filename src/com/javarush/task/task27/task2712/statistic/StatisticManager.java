@@ -1,5 +1,6 @@
 package com.javarush.task.task27.task2712.statistic;
 
+import com.javarush.task.task27.task2712.ConsoleHelper;
 import com.javarush.task.task27.task2712.kitchen.Cook;
 import com.javarush.task.task27.task2712.statistic.event.CookedOrderEventDataRow;
 import com.javarush.task.task27.task2712.statistic.event.EventDataRow;
@@ -33,7 +34,7 @@ public class StatisticManager {
             if (treeMap.containsKey(date)) {
                 treeMap.put(date, treeMap.get(date) + videoRow.getAmount() / 100);
             } else {
-                treeMap.put(date, treeMap.get(date) / 100);
+                treeMap.put(date, (double) (videoRow.getAmount() / 100));
             }
         }
         return treeMap;
@@ -56,18 +57,18 @@ public class StatisticManager {
             if (treeMap.containsKey(date)) {
                 if (treeMap.get(date).containsKey(cookRow.getCookName())) {
                     Integer currentCookingTime = treeMap.get(date).get(cookRow.getCookName());
-                    Integer newCookingTime = cookRow.getTime();
+                    Integer newCookingTime = cookRow.getTime() / 60;
                     Map<String, Integer> buffMap = treeMap.get(date);
                     buffMap.put(cookRow.getCookName(), currentCookingTime + newCookingTime);
                     treeMap.put(date, buffMap);
                 } else {
                     Map<String, Integer> buffMap = treeMap.get(date);
-                    buffMap.put(cookRow.getCookName(), cookRow.getTime());
+                    buffMap.put(cookRow.getCookName(), cookRow.getTime() / 60);
                     treeMap.put(date, buffMap);
                 }
             } else {
                 Map<String, Integer> buffMap = new TreeMap<>();
-                buffMap.put(cookRow.getCookName(), cookRow.getTime());
+                buffMap.put(cookRow.getCookName(), cookRow.getTime() / 60);
                 treeMap.put(date, buffMap);
             }
         }

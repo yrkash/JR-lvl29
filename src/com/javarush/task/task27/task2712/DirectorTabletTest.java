@@ -6,8 +6,8 @@ import com.javarush.task.task27.task2712.kitchen.Dish;
 import com.javarush.task.task27.task2712.statistic.StatisticManager;
 import com.javarush.task.task27.task2712.statistic.event.CookedOrderEventDataRow;
 import com.javarush.task.task27.task2712.statistic.event.VideoSelectedEventDataRow;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +17,7 @@ class DirectorTabletTest {
 
     private DirectorTablet directorTablet;
 
-    @BeforeEach
+    //@BeforeEach
     void setUp() {
         StatisticManager instance = StatisticManager.getInstance();
         Cook cook = new Cook("Иванов");
@@ -31,13 +31,13 @@ class DirectorTabletTest {
         dishList.add(Dish.SOUP);
 
 
-        CookedOrderEventDataRow cookedOrderEventDataRow = new CookedOrderEventDataRow("1", cook.toString(), 25, dishList);
+        CookedOrderEventDataRow cookedOrderEventDataRow = new CookedOrderEventDataRow("1", cook.toString(), 65, dishList);
         Date date = new Date();
         date.setMonth(06);
         cookedOrderEventDataRow.setCurrentDate(date);
         instance.register(cookedOrderEventDataRow);
 
-        CookedOrderEventDataRow cookedOrderEventDataRow2 = new CookedOrderEventDataRow("1", cook.toString(), 25, dishList);
+        CookedOrderEventDataRow cookedOrderEventDataRow2 = new CookedOrderEventDataRow("1", cook.toString(), 65, dishList);
         Date date2 = new Date();
         date2.setMonth(07);
         cookedOrderEventDataRow2.setCurrentDate(date2);
@@ -76,12 +76,12 @@ class DirectorTabletTest {
         directorTablet = new DirectorTablet();
     }
 
-    @Test
+    //@Test
     void printAdvertisementProfit() {
         directorTablet.printAdvertisementProfit();
     }
 
-    @Test
+    //@Test
     void printCookWorkloading() {
         directorTablet.printCookWorkloading();
     }

@@ -20,15 +20,24 @@ public class Restaurant {
         cook.addObserver(waiter);
 
         tablet.createOrder();
-        tablet.createOrder();
-        tablet.createOrder();
-        tablet.createOrder();
-
+        //tablet.createOrder();
+        //tablet.createOrder();
+        //tablet.createOrder();
+        /*
         DirectorTablet directorTablet = new DirectorTablet();
         directorTablet.printAdvertisementProfit();
         directorTablet.printCookWorkloading();
         directorTablet.printActiveVideoSet();
         directorTablet.printArchivedVideoSet();
+
+*/
+
+        DirectorTabletTest tabletTest = new DirectorTabletTest();
+        tabletTest.setUp();
+        tabletTest.printAdvertisementProfit();
+        tabletTest.printCookWorkloading();
+
+
 
 
 
