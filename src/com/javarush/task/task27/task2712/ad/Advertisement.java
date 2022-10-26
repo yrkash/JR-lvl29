@@ -42,6 +42,10 @@ public class Advertisement {
         hits--;
     }
 
+    public boolean isActive() {
+        return hits > 0;
+    }
+
     @Override
     public String toString() {
         return name + " is displaying... " + amountPerOneDisplaying + ", " + amountPerOneDisplaying * 1000 / duration;

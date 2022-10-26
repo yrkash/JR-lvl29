@@ -20,11 +20,11 @@ public class Restaurant {
         cook.addObserver(waiter);
 
         tablet.createOrder();
-        //tablet.createOrder();
-        //tablet.createOrder();
-        //tablet.createOrder();
+        tablet.createOrder();
+        tablet.createOrder();
+        tablet.createOrder();
 
-        /*
+
         DirectorTablet directorTablet = new DirectorTablet();
         directorTablet.printAdvertisementProfit();
         directorTablet.printCookWorkloading();
@@ -32,11 +32,13 @@ public class Restaurant {
         directorTablet.printArchivedVideoSet();
 
 
-         */
+        /*
         DirectorTabletTest directorTabletTest = new DirectorTabletTest();
         directorTabletTest.setUp();
         directorTabletTest.printAdvertisementProfit();
 
+
+         */
 
 
     }

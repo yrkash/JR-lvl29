@@ -31,6 +31,7 @@ public class AdvertisementManager {
         List<Advertisement> advertisements = storage.list().stream()
                         .filter(advertisement -> advertisement.getHits() > 0)
                                 . collect(Collectors.toList());
+        Collections.reverse(advertisements);
         recursionSearch(advertisements);
         VideoSelectedEventDataRow videoSelectedEventDataRow = new VideoSelectedEventDataRow(bestChoice, bestAmount, bestDuration);
         statisticManager.register(videoSelectedEventDataRow);
@@ -95,7 +96,10 @@ public class AdvertisementManager {
         }
     }
     public void recursionSearch(List<Advertisement> list) {
-        if (list.size() > 0) checkAdsList(list);
+        if (list.size() > 0) {
+            checkAdsList(list);
+            if (bestAmount > 0) return;
+        }
 
         for (int i = 0; i < list.size(); i++) {
             List<Advertisement> newList = new ArrayList<>(list);
