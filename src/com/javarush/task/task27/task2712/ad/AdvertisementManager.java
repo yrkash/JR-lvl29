@@ -1,6 +1,5 @@
 package com.javarush.task.task27.task2712.ad;
 
-import com.javarush.task.task27.task2712.ConsoleHelper;
 import com.javarush.task.task27.task2712.statistic.StatisticManager;
 import com.javarush.task.task27.task2712.statistic.event.VideoSelectedEventDataRow;
 
@@ -8,14 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AdvertisementManager {
     private final AdvertisementStorage storage = AdvertisementStorage.getInstance();
-
-    private List<Advertisement> bestChoice = new ArrayList<>();
-    private long bestAmount;
-    private int bestDuration;
     private int timeSeconds;
 
     public AdvertisementManager(int timeSeconds) {
@@ -23,89 +17,77 @@ public class AdvertisementManager {
     }
 
     public void processVideos() {
-        StatisticManager statisticManager = StatisticManager.getInstance();
+        this.totalTimeSecondsLeft = Integer.MAX_VALUE;
+        obtainOptimalVideoSet(new ArrayList<Advertisement>(), timeSeconds, 0l);
 
+        VideoSelectedEventDataRow row = new VideoSelectedEventDataRow(optimalVideoSet, maxAmount, timeSeconds - totalTimeSecondsLeft);
+        StatisticManager.getInstance().register(row);
 
-        if (storage.list().isEmpty()) throw new NoVideoAvailableException();
-
-        List<Advertisement> advertisements = storage.list().stream()
-                        .filter(advertisement -> advertisement.getHits() > 0)
-                                . collect(Collectors.toList());
-        Collections.reverse(advertisements);
-        recursionSearch(advertisements);
-        VideoSelectedEventDataRow videoSelectedEventDataRow = new VideoSelectedEventDataRow(bestChoice, bestAmount, bestDuration);
-        statisticManager.register(videoSelectedEventDataRow);
-
-        // Сортировка по условию 2.4 из задания 9
-        bestChoice
-                .sort(Comparator.comparingLong(Advertisement::getAmountPerOneDisplaying)
-                        .thenComparingInt(Advertisement::getDuration)
-                        .reversed());
-
-        // Вывод на экран + Декремент поля hits у Advertisement
-        bestChoice.forEach(advertisement -> {
-            ConsoleHelper.writeMessage(advertisement.toString());
-            advertisement.revalidate();
-        });
-
-        /*
-        // Сортировка по условию. !!!!!!!!!!!!!! На всякий случай оставлю
-        bestChoice.stream()
-                .sorted(Comparator.comparingLong(Advertisement::getAmountPerOneDisplaying).reversed()
-                        .thenComparing(a -> a.getAmountPerOneDisplaying() / a.getDuration()))
-                .forEach(a-> ConsoleHelper.writeMessage(a.toString()));
-        */
+        displayAdvertisement();
     }
-    // Последующие 4 функции - Рекурсивный алгоритм портфеля
-    private int calcFullDuration(List<Advertisement> list) {
-        return list.stream().mapToInt(Advertisement::getDuration).sum();
-    }
-    private long calcFullAmountForDisplayingAdsList(List<Advertisement> list) {
-        return list.stream().mapToLong(Advertisement::getAmountPerOneDisplaying).sum();
-    }
-    private void checkAdsList(List <Advertisement> list) {
-        int currentDuration = calcFullDuration(list);
-        long currentAmount = calcFullAmountForDisplayingAdsList(list);
 
-        if (bestChoice == null && calcFullDuration(list) <= timeSeconds) {
-            bestChoice = list;
-            bestAmount = currentAmount;
-            bestDuration = currentDuration;
-        } else {
-            if (currentDuration <= timeSeconds) {
+    //recursy
+    private long maxAmount;
+    private List<Advertisement> optimalVideoSet;
+    private int totalTimeSecondsLeft;
 
-                if (currentAmount > bestAmount) {
-                    bestChoice = list;
-                    bestAmount = currentAmount;
-                    bestDuration = currentDuration;
-                }
-
-                if (currentAmount == bestAmount) {
-                    if (currentDuration > bestDuration) {
-                        bestChoice = list;
-                        bestAmount = currentAmount;
-                        bestDuration = currentDuration;
-                    }
-                    if (currentDuration == bestDuration && list.size() < bestChoice.size()) {
-                        bestChoice = list;
-                        bestAmount = currentAmount;
-                        bestDuration = currentDuration;
-                    }
-                }
+    private void obtainOptimalVideoSet(List<Advertisement> totalList, int currentTimeSecondsLeft, long currentAmount) {
+        if (currentTimeSecondsLeft < 0) {
+            return;
+        } else if (currentAmount > maxAmount
+                || currentAmount == maxAmount && (totalTimeSecondsLeft > currentTimeSecondsLeft
+                || totalTimeSecondsLeft == currentTimeSecondsLeft && totalList.size() < optimalVideoSet.size())) {
+            this.totalTimeSecondsLeft = currentTimeSecondsLeft;
+            this.optimalVideoSet = totalList;
+            this.maxAmount = currentAmount;
+            if (currentTimeSecondsLeft == 0) {
+                return;
             }
         }
-    }
-    public void recursionSearch(List<Advertisement> list) {
-        if (list.size() > 0) {
-            checkAdsList(list);
-            if (bestAmount > 0) return;
-        }
 
-        for (int i = 0; i < list.size(); i++) {
-            List<Advertisement> newList = new ArrayList<>(list);
-            newList.remove(i);
-            recursionSearch(newList);
+        ArrayList<Advertisement> tmp = getActualAdvertisements();
+        tmp.removeAll(totalList);
+        for (Advertisement ad : tmp) {
+            if (!ad.isActive()) continue;
+            ArrayList<Advertisement> currentList = new ArrayList<>(totalList);
+            currentList.add(ad);
+            obtainOptimalVideoSet(currentList, currentTimeSecondsLeft - ad.getDuration(), currentAmount + ad.getAmountPerOneDisplaying());
         }
     }
 
+    private ArrayList<Advertisement> getActualAdvertisements() {
+        ArrayList<Advertisement> advertisements = new ArrayList<>();
+        for (Advertisement ad : storage.list()) {
+            if (ad.isActive()) {
+                advertisements.add(ad);
+            }
+        }
+        return advertisements;
+    }
+
+    private void displayAdvertisement() {
+        //TODO displaying
+        if (optimalVideoSet == null || optimalVideoSet.isEmpty()) {
+            throw new NoVideoAvailableException();
+        }
+
+        Collections.sort(optimalVideoSet, new Comparator<Advertisement>() {
+            @Override
+            public int compare(Advertisement o1, Advertisement o2) {
+                long l = o2.getAmountPerOneDisplaying() - o1.getAmountPerOneDisplaying();
+                return (int) (l != 0 ? l : o2.getDuration() - o1.getDuration());
+            }
+        });
+
+        for (Advertisement ad : optimalVideoSet) {
+            displayInPlayer(ad);
+            ad.revalidate();
+        }
+    }
+
+    private void displayInPlayer(Advertisement advertisement) {
+        //TODO get Player instance and display content
+        System.out.println(advertisement.getName() + " is displaying... " + advertisement.getAmountPerOneDisplaying() +
+                ", " + (1000 * advertisement.getAmountPerOneDisplaying() / advertisement.getDuration()));
+    }
 }
