@@ -8,6 +8,7 @@ import com.javarush.task.task27.task2712.kitchen.Order;
 import com.javarush.task.task27.task2712.kitchen.Waiter;
 import com.javarush.task.task27.task2712.statistic.StatisticManager;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -15,23 +16,33 @@ public class Restaurant {
 
     private static final int ORDER_CREATING_INTERVAL = 100;
     public static void main(String[] args) {
-        Tablet tablet = new Tablet(5);
-        Cook cook = new Cook("Irina");
+        List<Tablet> tablets = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            tablets.add(new Tablet(i));
+        }
+        //Tablet tablet = new Tablet(5);
+        Cook cook1 = new Cook("Irina");
+        Cook cook2 = new Cook("Amigo");
+        StatisticManager statisticManager = StatisticManager.getInstance();
+        statisticManager.register(cook1);
+        statisticManager.register(cook2);
         Waiter waiter = new Waiter();
-        tablet.addObserver(cook);
-        cook.addObserver(waiter);
+        for (int i = 0; i < 5; i++) {
+            tablets.get(i).addObserver(cook1);
+            tablets.get(i).addObserver(cook2);
+        }
+        //tablet.addObserver(cook);
+        //cook.addObserver(waiter);
+        RandomOrderGeneratorTask task = new RandomOrderGeneratorTask(tablets, ORDER_CREATING_INTERVAL);
+        Thread thread = new Thread(task);
+        thread.start();
+        try {
+            thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        thread.interrupt();
 
-        tablet.createOrder();
-        tablet.createOrder();
-        tablet.createOrder();
-        tablet.createOrder();
-
-
-        DirectorTablet directorTablet = new DirectorTablet();
-        directorTablet.printAdvertisementProfit();
-        directorTablet.printCookWorkloading();
-        directorTablet.printActiveVideoSet();
-        directorTablet.printArchivedVideoSet();
 
 
         /*
