@@ -26,10 +26,10 @@ public class Restaurant {
         StatisticManager statisticManager = StatisticManager.getInstance();
         statisticManager.register(cook1);
         statisticManager.register(cook2);
+        OrderManager orderManager = new OrderManager();
         Waiter waiter = new Waiter();
         for (int i = 0; i < 5; i++) {
-            tablets.get(i).addObserver(cook1);
-            tablets.get(i).addObserver(cook2);
+            tablets.get(i).addObserver(orderManager);
         }
         //tablet.addObserver(cook);
         //cook.addObserver(waiter);
@@ -37,21 +37,18 @@ public class Restaurant {
         Thread thread = new Thread(task);
         thread.start();
         try {
-            thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(1000);
+            thread.interrupt();
+            thread.join();
+            Thread.sleep(1000);
+        } catch (InterruptedException ignore) {
         }
-        thread.interrupt();
 
-
-
-        /*
-        DirectorTabletTest directorTabletTest = new DirectorTabletTest();
-        directorTabletTest.setUp();
-        directorTabletTest.printAdvertisementProfit();
-
-
-         */
+        DirectorTablet directorTablet = new DirectorTablet();
+        directorTablet.printAdvertisementProfit();
+        directorTablet.printCookWorkloading();
+        directorTablet.printActiveVideoSet();
+        directorTablet.printArchivedVideoSet();
 
 
     }
