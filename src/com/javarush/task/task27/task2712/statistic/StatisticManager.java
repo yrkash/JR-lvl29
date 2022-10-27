@@ -12,7 +12,7 @@ import java.util.*;
 public class StatisticManager {
     private static StatisticManager instance;
 
-    private Set<Cook> cooks = new HashSet<>();
+//    private Set<Cook> cooks = new HashSet<>();
     private StatisticStorage statisticStorage = new StatisticStorage();
     private StatisticManager() {
     }
@@ -106,12 +106,11 @@ public class StatisticManager {
         return instance;
     }
 
+
     public void register(EventDataRow data) {
         statisticStorage.put(data);
     }
 
-    public void register(Cook cook) {
-        this.cooks.add(cook);
-    }
+//    public void register(Cook cook) {this.cooks.add(cook);}
 
 }

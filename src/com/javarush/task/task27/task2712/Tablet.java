@@ -10,10 +10,13 @@ import com.javarush.task.task27.task2712.statistic.StatisticManager;
 
 import java.io.IOException;
 import java.util.Observable;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Tablet extends Observable {
+public class Tablet {
+
+    private LinkedBlockingQueue<Order> queue;
 
     private final int number;
 
@@ -21,6 +24,10 @@ public class Tablet extends Observable {
 
     public Tablet(int number) {
         this.number = number;
+    }
+
+    public void setQueue(LinkedBlockingQueue queue) {
+        this.queue = queue;
     }
 
     public Order createOrder() {
@@ -35,8 +42,9 @@ public class Tablet extends Observable {
             }
 
             if (!order.isEmpty()) {
-                this.setChanged();
-                this.notifyObservers(order);
+                queue.add(order);
+//                this.setChanged();
+//                this.notifyObservers(order);
                 return order;
             }
         } catch (IOException e) {
@@ -58,8 +66,10 @@ public class Tablet extends Observable {
             }
 
             if (!order.isEmpty()) {
-                this.setChanged();
-                this.notifyObservers(order);
+                queue.add(order);
+//
+//                this.setChanged();
+//                this.notifyObservers(order);
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE,"Console is unavailable.");

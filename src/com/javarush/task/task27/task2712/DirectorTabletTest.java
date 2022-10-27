@@ -21,10 +21,10 @@ class DirectorTabletTest {
     void setUp() {
         StatisticManager instance = StatisticManager.getInstance();
         Cook cook = new Cook("Иванов");
-        instance.register(cook);
+//        instance.register(cook);
 
         Cook cook2 = new Cook("Тестов");
-        instance.register(cook2);
+//        instance.register(cook2);
 
         List<Dish> dishList = new ArrayList<>();
         dishList.add(Dish.STEAK);
